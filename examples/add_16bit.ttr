@@ -1,0 +1,33 @@
+# https://github.com/bootnecklad/Titan-Specifications/blob/master/add16bit.asm (0441749)
+
+label :ADD_16
+  clr R0
+  add R4, R2    # Adds low byte of two 16 bit numbers
+  jpc :ADD16C0  # If carry bit set, then addition overflowed, need to increment
+                # high byte of one 16bit number
+  jmp :ADD16CC0 # Carry bit not set, carry on.. (haha!)
+
+label :ADD16C0
+  ldc R5, 0x01
+  add R5, R1    # Increment high byte of one of the 16 bit numbers
+  jpc :ADD16C1  # If incrementation overflowed then need to increment R0
+                # (overflow register, ie addition will be greater than 65536)
+  jmp :ADD16CC0 # Didn't happen...
+
+label :ADD16C1
+  add R5, R0    # Increments overflow register (R0), 0x01 already in R5, dont
+                # need to load again
+
+label :ADD16CC0
+  add R3, R1    # Adds high bytes of two 16bit numbers
+  jpc :ADD16OF  # High bytes overflowed, need to increment overflow register
+  jmp :END      # Finished! Result is in R1(high byte) and R2(low byte) if
+                # result overflowed then R0 contains overflow bit.
+
+label :ADD16OF
+  ldc R5, 0x01  # Dont know if overflow register has already been incremented
+  add R5, R0    # Overflow register sorted
+  jmp :END      # Finished!
+
+label :END
+  jmp :END

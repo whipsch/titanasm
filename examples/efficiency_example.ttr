@@ -1,0 +1,8 @@
+label :BEGIN
+  ldc R0, 0x56    # Loads first constant to be added
+  ldc R1, 0x7F    # Loads second constant to be added
+  add R0, R1      # Adds the two values in R0 and R1
+  stm R0, 0xFFFF  # Outputs new value to LED I/O Port
+
+label :END
+  jmp :END        # Continuous loop

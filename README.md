@@ -2,5 +2,5 @@
 
 
 ## License:
-*titanasm* is not under any licensing restrictions.  You are free to use this
-software for any purpose.
+*titanasm* is not subject to any licensing restrictions.  You are free to use
+this software for any purpose.
