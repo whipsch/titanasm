@@ -1,4 +1,6 @@
-# titanasm - a DSL-based assembler written in Ruby for bootnecklad's homebrew CPU, Titan.
+# titanasm
+
+*titanasm* is a DSL-based assembler written in Ruby for bootnecklad's homebrew CPU, Titan.
 
 
 ## License:
