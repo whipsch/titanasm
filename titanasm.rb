@@ -4,6 +4,7 @@ require 'optparse'
 
 $:.unshift '.'
 require 'lib/program'
+require 'lib/util'
 
 options = {}
 OptionParser.new do |opts|
@@ -25,8 +26,5 @@ unless options[:file]
 end
 
 File.open(options[:file], 'rb') do |f|
-  # temporary
-  Titan::Program.new(f.read, options[:file]).assemble.each_byte do |b|
-    puts "%04b %04b" % [b >> 4, b & 0xF]
-  end
+  pp_hex(Titan::Program.new(f.read, options[:file]).assemble)
 end
