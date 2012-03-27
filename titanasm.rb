@@ -3,8 +3,10 @@
 require 'optparse'
 
 $:.unshift '.'
-require 'lib/program'
 require 'lib/util'
+require 'lib/emitters'
+require 'lib/instructions'
+require 'lib/program'
 
 options = {}
 OptionParser.new do |opts|
@@ -26,5 +28,7 @@ unless options[:file]
 end
 
 File.open(options[:file], 'rb') do |f|
-  pp_hex(Titan::Program.new(f.read, options[:file]).assemble)
+  # the downsides of using a DSL for this...
+  contents = f.read.gsub(/^(\s*)(and|not)(\s+)/, '\1\2_\3')
+  pp_hex(Titan::Program.new(contents, options[:file]).assemble)
 end
