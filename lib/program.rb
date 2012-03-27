@@ -1,11 +1,17 @@
 module Titan
   class Program
+    include Util
+
+    # TODO: move this or do it a different way
     def self.const_missing(name)
       # registers
       if name.to_s =~ /^R([0-9A-F])$/
         $1.to_i(16) 
+      else
+        super
       end
     end
+
 
     attr_reader :instructions
     attr_reader :current_address
@@ -33,7 +39,7 @@ module Titan
       name = name.to_s.sub(/_$/, '').to_sym if name =~ /_$/
 
       if ins_def = INSTRUCTIONS[name]
-        eval_instruction(name, ins_def, args, :pre) if Titan.produces_label?(name, args)
+        eval_instruction(name, ins_def, args, :pre) if produces_label?(name, args)
         @current_address += instruction_length(ins_def, args)
         @instructions << args.unshift(name)
       else

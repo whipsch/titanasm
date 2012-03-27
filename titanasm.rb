@@ -58,7 +58,7 @@ File.open(opts[:file], 'rb') do |f|
   output = Titan::Program.new(contents, opts[:file]).assemble(opts[:type])
 
   if opts[:hex_dump]
-    Titan.pp_hex(output)
+    Titan::Util.pp_hex(output)
   elsif opts[:stdout]
     puts output
   elsif opts[:out]
