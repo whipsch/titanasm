@@ -85,9 +85,10 @@ module Titan
       case mode
       when :assemble
         if params[1].is_a?(Array)
-          [opcode, params[0], ((params[1][0] & 0x0F) << 4) | (params[1][1] & 0x0F)].pack('CC')
+          [opcode, ((params[1][0] & 0x0F) << 4) | (params[1][1] & 0x0F)].pack('CC')
         else
-          params.unshift(opcode).pack('Cn')
+          params[1] = program[params[1]] if params[1].is_a?(Symbol)
+          [opcode, params[1]].pack('Cn')
         end
       when :asm_src
         if params[1].is_a?(Array)

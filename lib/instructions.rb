@@ -2,7 +2,7 @@ module Titan
   # variable opcode procs
   op_low_fp       = Proc.new { |base, params| base | (params[0] & 0x0F) }
   op_ldi_sti_type = Proc.new { |base, params|
-    base += 0x10 unless params.is_a?(Array)
+    base += 0x10 unless params[1].is_a?(Array)
     base | (params[0] & 0x07)
   }
 
