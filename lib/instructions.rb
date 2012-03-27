@@ -12,7 +12,7 @@ module Titan
   len_asm_word = Proc.new { |params| params.length == 1 ? 2 : 0 }
   len_asm_data = Proc.new { |params|
     if params.length == 2
-      params[0].is_a?(Fixnum) ? 1 : params[0].length
+      params[1].is_a?(Fixnum) ? 1 : params[1].length
     else
       params.length
     end

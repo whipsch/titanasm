@@ -63,20 +63,20 @@ module Titan
         "%s R%X,R%X" % params.unshift(name.upcase)
       end
     },
-    :gen_none   => Proc.new { |mode, name, copde, params, program|
+    :gen_none   => Proc.new { |mode, name, opcode, params, program|
       case mode
+      when :assemble
+        [opcode].pack('C')
       when :asm_src
         name.to_s.upcase
-      else
-        ''
       end
     },
     :gen_r1 => Proc.new { |mode, name, opcode, params, program|
       case mode
+      when :assemble
+        [opcode].pack('C')
       when :asm_src
         "%s R%X" % params.unshift(name.upcase)
-      else
-        ''
       end
     },
 
