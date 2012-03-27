@@ -30,7 +30,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-orrg :BEGIN # NOT IMPLEMENTED IN ASSEMBLER YET
+orig :BEGIN # NOT IMPLEMENTED IN ASSEMBLER YET
 
 word :SERIAL_PORT_0, 0xFFFF # still need to decide which address the serial port will be at
 data :HASH_TABLE,       "\x00\x01\x02\x03\x04\x05\x06\x07\x08\x09\x00\x00\x00\x00\x00\x00\x00\x0A\x0B\x0C\x0D\x0E\x0F"
@@ -121,6 +121,20 @@ label :CLEAR
   jmp :BEGIN          # That was quick!
 
 label :BYTE
+  ldc R1, 0x02            # Number of bytes of input to get
+  ldc R2, 0x01            # Value need for incrementing/decrementing
+  ldm R0, :SERIAL_PORT_0  # Gets byte from input
+  tst R0                  # test to see if byte contains anything (if not, nothing was fetched)
+  jpz :BYTE               # try again
+  ldc RF, 0x1B            # ASCII value for ESC (Escape)
+  xor RF, R0              # Checks if input byte was an ESC
+  jpz :BEGIN              # If the byte was an ESC, return to '>' prompt
+  sub R1, R2              # Decrement byte count
+  psh R0                  # Pushes byte onto stack
+  jpz :WRITE              # No more bytes to fetch so lets convert them
+  jmp :BYTE               # Get another byte
+
+label :WRITE
   pop R1              # Low nybble of data
   ldc R0, 0x30        # Remove constant from ASCII value, makes table smaller.
   sub R0, R1          # R0 = R0 - R1

@@ -30,11 +30,56 @@ module Titan
     end
 
     def method_missing(name, *args, &block)
-      # TODO
+      name = name.to_s.sub(/_$/, '').to_sym if name =~ /_$/
+
+      if ins_def = INSTRUCTIONS[name]
+        eval_instruction(name, ins_def, args, :pre) if Titan.produces_label?(name, args)
+        @current_address += instruction_length(ins_def, args)
+        @instructions << args.unshift(name)
+      else
+        super
+      end
     end
 
-    def assemble
-      # TODO
+    def instruction_length(ins_def, args)
+      len = ins_def[0] ? 1 : 0  # does this instruction have an opcode?
+
+      len + (ins_def[1].is_a?(Proc) ? ins_def[1].call(args) : ins_def[1])
+    end
+
+    def eval_instruction(name, ins_def, args, mode)
+      if ins_def.length == 4
+        em = ins_def[3]
+        em = EMITTERS[em] if em.is_a?(Symbol)
+
+        op = ins_def[0]
+        op = op.call(args) if op.is_a?(Proc)
+
+        return em.call(mode, name, op, args, self) 
+      end
+
+      ''
+    end
+
+    def assemble(mode)
+      indent = ''
+
+      @instructions.reduce('') do |acc, ins|
+        name = ins[0]
+        ins_def = INSTRUCTIONS[name]
+
+        indent = '' if mode == :asm_src && name == :label
+        
+        output = eval_instruction(name, ins_def, ins[1..-1], mode)
+        acc += indent + output
+
+        if mode == :asm_src
+          indent = '  ' if name == :label
+          acc += "\n" if output != ''
+        end
+        
+        acc
+      end
     end
   end
 end
